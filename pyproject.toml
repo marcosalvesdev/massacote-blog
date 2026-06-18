@@ -1,0 +1,9 @@
+[project]
+name = "massacote-blog"
+version = "0.1.0"
+description = "This is a blog to talk about tech and other things I want."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "django>=6.0.6",
+]
