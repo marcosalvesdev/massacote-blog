@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }} — Massacote{% endblock %}
+
+{% block content %}
+<article class="article">
+    {% if post.cover_image %}
+        <div class="article__cover">
+            <img src="{{ post.cover_image.url }}" alt="">
+        </div>
+    {% endif %}
+    <h1 class="article__title">{{ post.title }}</h1>
+    <p class="article__meta">
+        {{ post.author.get_username }}
+        <span class="dot"></span>{{ post.created_at|date:"M j, Y" }}
+        <span class="dot"></span>{{ post.reading_time }} min read
+    </p>
+    <div class="article__body">{{ post.content }}</div>
+    <a class="article__back" href="{% url 'post:list' %}">&larr; Back to all posts</a>
+</article>
+{% endblock %}

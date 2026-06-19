@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Delete story — Massacote{% endblock %}
+
+{% block content %}
+<form class="confirm-form" method="post">
+    {% csrf_token %}
+    <h1 class="confirm-form__title">Delete "{{ object.title }}"?</h1>
+    <p class="confirm-form__body">This can't be undone.</p>
+    <div class="form-actions">
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a class="btn btn-secondary" href="{{ object.get_absolute_url }}">Cancel</a>
+    </div>
+</form>
+{% endblock %}

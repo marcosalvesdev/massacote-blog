@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Edit story — Massacote{% endblock %}
+
+{% block content %}
+<form class="post-form" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+        <div class="post-form__errors">{{ form.non_field_errors }}</div>
+    {% endif %}
+
+    <label class="post-form__field-label" for="{{ form.cover_image.id_for_label }}">Cover image (optional)</label>
+    {% if object.cover_image %}
+        <img class="post-form__cover-preview" src="{{ object.cover_image.url }}" alt="">
+    {% endif %}
+    {{ form.cover_image.errors }}
+    {{ form.cover_image }}
+
+    {{ form.title.errors }}
+    {{ form.title }}
+
+    <label class="post-form__field-label" for="{{ form.excerpt.id_for_label }}">Excerpt (optional)</label>
+    {{ form.excerpt.errors }}
+    {{ form.excerpt }}
+
+    <label class="post-form__field-label" for="{{ form.content.id_for_label }}">Story</label>
+    {{ form.content.errors }}
+    {{ form.content }}
+
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Save changes</button>
+        <a class="btn btn-secondary" href="{{ object.get_absolute_url }}">Cancel</a>
+    </div>
+</form>
+{% endblock %}
