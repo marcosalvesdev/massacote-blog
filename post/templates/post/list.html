@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Massacote — Home{% endblock %}
+
+{% block content %}
+<div class="feed">
+    {% for post in posts %}
+        <article class="feed-item">
+            <div class="feed-item__text">
+                <h2 class="feed-item__title">
+                    <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+                </h2>
+                <p class="feed-item__excerpt">{{ post.get_excerpt }}</p>
+                <p class="feed-item__meta">
+                    {{ post.author.get_username }}
+                    <span class="dot"></span>{{ post.created_at|date:"M j, Y" }}
+                    <span class="dot"></span>{{ post.reading_time }} min read
+                </p>
+            </div>
+            {% if post.cover_image %}
+                <a class="feed-item__thumb" href="{{ post.get_absolute_url }}">
+                    <img src="{{ post.cover_image.url }}" alt="">
+                </a>
+            {% endif %}
+        </article>
+    {% empty %}
+        <p class="feed-empty">No posts yet.</p>
+    {% endfor %}
+</div>
+
+{% if is_paginated %}
+    <nav class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}">&larr; Newer</a>
+        {% endif %}
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Older &rarr;</a>
+        {% endif %}
+    </nav>
+{% endif %}
+{% endblock %}

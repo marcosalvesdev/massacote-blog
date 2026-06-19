@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Write a story — Massacote{% endblock %}
+
+{% block content %}
+<form class="post-form" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+        <div class="post-form__errors">{{ form.non_field_errors }}</div>
+    {% endif %}
+
+    <label class="post-form__field-label" for="{{ form.cover_image.id_for_label }}">Cover image (optional)</label>
+    {{ form.cover_image.errors }}
+    {{ form.cover_image }}
+
+    {{ form.title.errors }}
+    {{ form.title }}
+
+    <label class="post-form__field-label" for="{{ form.excerpt.id_for_label }}">Excerpt (optional)</label>
+    {{ form.excerpt.errors }}
+    {{ form.excerpt }}
+
+    <label class="post-form__field-label" for="{{ form.content.id_for_label }}">Story</label>
+    {{ form.content.errors }}
+    {{ form.content }}
+
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Publish</button>
+        <a class="btn btn-secondary" href="{% url 'post:list' %}">Cancel</a>
+    </div>
+</form>
+{% endblock %}
