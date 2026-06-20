@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Delete account — Massacote{% endblock %}
+
+{% block content %}
+<form class="confirm-form" method="post">
+    {% csrf_token %}
+    <h1 class="confirm-form__title">Delete your account?</h1>
+    <p class="confirm-form__body">
+        This will permanently delete the account "{{ object.username }}" and all of its posts. This can't be undone.
+    </p>
+    <div class="form-actions">
+        <button type="submit" class="btn btn-danger">Delete account</button>
+        <a class="btn btn-secondary" href="{% url 'account:detail' username=object.username %}">Cancel</a>
+    </div>
+</form>
+{% endblock %}

@@ -4,5 +4,5 @@ __pycache__/
 db.sqlite3
 __vscode__/
 .venv/
-.env/
+.env
 media/

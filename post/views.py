@@ -46,10 +46,10 @@ class PostDeleteView(LoginRequiredMixin, DeleteView):
         return Post.objects.filter(slug=self.kwargs["slug"], author=self.request.user)
 
 
-class PostEditView(LoginRequiredMixin, UpdateView):
+class PostUpdateView(LoginRequiredMixin, UpdateView):
     model = Post
     form_class = PostForm
-    template_name = "post/edit.html"
+    template_name = "post/update.html"
     context_object_name = "post"
 
     def get_queryset(self):

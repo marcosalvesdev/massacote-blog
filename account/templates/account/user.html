@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}{{ profile_user.username }} — Massacote{% endblock %}
+
+{% block content %}
+<div class="profile-page">
+    <div class="profile-page__header">
+        {% if profile_user.profile.avatar %}
+            <img class="profile-page__avatar" src="{{ profile_user.profile.avatar.url }}" alt="">
+        {% else %}
+            <div class="profile-page__avatar-placeholder"></div>
+        {% endif %}
+        <div>
+            <h1 class="profile-page__name">{{ profile_user.username }}</h1>
+            <p class="profile-page__email">{{ profile_user.email }}</p>
+        </div>
+    </div>
+
+    {% if profile_user.profile.bio %}
+        <p class="profile-page__bio">{{ profile_user.profile.bio }}</p>
+    {% endif %}
+
+    <div class="profile-page__actions">
+        <a class="btn btn-secondary" href="{% url 'account:update' username=profile_user.username %}">Edit profile</a>
+        <a class="btn btn-secondary" href="{% url 'password_change' %}">Change password</a>
+        <a class="btn btn-danger" href="{% url 'account:delete' username=profile_user.username %}">Delete account</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Sign in — Massacote{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+    <h1 class="auth-page__title">Sign in</h1>
+
+    <form class="auth-form" method="post">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+            <div class="post-form__errors">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <div class="field">
+            <label class="post-form__field-label" for="{{ form.username.id_for_label }}">Username</label>
+            {{ form.username }}
+            {{ form.username.errors }}
+        </div>
+
+        <div class="field">
+            <label class="post-form__field-label" for="{{ form.password.id_for_label }}">Password</label>
+            <div class="password-field">
+                {{ form.password }}
+                <button type="button" class="password-toggle" data-target="{{ form.password.id_for_label }}">Show</button>
+            </div>
+            {{ form.password.errors }}
+        </div>
+
+        <input type="hidden" name="next" value="{{ next }}">
+        <button type="submit" class="btn btn-primary">Sign in</button>
+    </form>
+
+    <p class="auth-page__footer">
+        <a href="{% url 'password_reset' %}">Forgot your password?</a>
+    </p>
+    <p class="auth-page__footer">
+        Don't have an account? <a href="{% url 'account:create' %}">Sign up</a>
+    </p>
+</div>
+{% endblock %}

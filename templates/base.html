@@ -13,13 +13,18 @@
 <body>
     <header class="site-header">
         <div class="site-header__inner">
-            <a class="wordmark" href="{% url 'post:list' %}">Massacote</a>
+            <a class="wordmark" href="{% url 'post:list' %}">Blog do Massacote</a>
             <nav class="site-nav">
                 {% if user.is_authenticated %}
                     <a class="site-nav__write" href="{% url 'post:create' %}">Write</a>
-                    <span class="site-nav__user">{{ user.get_username }}</span>
+                    <a class="site-nav__user" href="{% url 'account:detail' username=user.username %}">{{ user.get_username }}</a>
+                    <form class="site-nav__logout-form" method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="site-nav__logout">Sign out</button>
+                    </form>
                 {% else %}
-                    <a class="site-nav__write" href="{% url 'admin:login' %}">Sign in</a>
+                    <a class="site-nav__write" href="{% url 'account:create' %}">Sign up</a>
+                    <a class="site-nav__write" href="{% url 'login' %}">Sign in</a>
                 {% endif %}
             </nav>
         </div>
@@ -34,5 +39,6 @@
     </footer>
 
     <script src="{% static 'post/js/autosize-textarea.js' %}"></script>
+    <script src="{% static 'post/js/password-toggle.js' %}"></script>
 </body>
 </html>
