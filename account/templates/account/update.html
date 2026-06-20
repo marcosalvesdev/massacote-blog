@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Edit profile — Massacote{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+    <h1 class="auth-page__title">Edit profile</h1>
+
+    <form class="auth-form" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+            <div class="post-form__errors">{{ form.non_field_errors }}</div>
+        {% endif %}
+        {% if profile_form.non_field_errors %}
+            <div class="post-form__errors">{{ profile_form.non_field_errors }}</div>
+        {% endif %}
+
+        <div class="field">
+            <label class="post-form__field-label" for="{{ profile_form.avatar.id_for_label }}">Profile picture</label>
+            {% if profile_form.instance.avatar %}
+                <img class="profile-page__avatar" src="{{ profile_form.instance.avatar.url }}" alt="">
+            {% else %}
+                <div class="profile-page__avatar-placeholder"></div>
+            {% endif %}
+            {{ profile_form.avatar.errors }}
+            {{ profile_form.avatar }}
+        </div>
+
+        <div class="field">
+            <label class="post-form__field-label" for="{{ form.username.id_for_label }}">Username</label>
+            {{ form.username }}
+            {{ form.username.errors }}
+        </div>
+
+        <div class="field">
+            <label class="post-form__field-label" for="{{ form.first_name.id_for_label }}">First name</label>
+            {{ form.first_name }}
+            {{ form.first_name.errors }}
+        </div>
+
+        <div class="field">
+            <label class="post-form__field-label" for="{{ form.last_name.id_for_label }}">Last name</label>
+            {{ form.last_name }}
+            {{ form.last_name.errors }}
+        </div>
+
+        <div class="field">
+            <label class="post-form__field-label" for="{{ form.email.id_for_label }}">Email</label>
+            {{ form.email }}
+            {{ form.email.errors }}
+        </div>
+
+        <div class="field">
+            <label class="post-form__field-label" for="{{ profile_form.bio.id_for_label }}">Bio</label>
+            {{ profile_form.bio.errors }}
+            {{ profile_form.bio }}
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Save changes</button>
+            <a class="btn btn-secondary" href="{% url 'account:detail' username=form.instance.username %}">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
