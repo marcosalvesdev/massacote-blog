@@ -5,7 +5,7 @@ READING_WORDS_PER_MINUTE = 200
 
 
 def post_cover_path(instance, filename):
-    return f"post_covers/{instance.author_id}/{filename}"
+    return f"{instance.author.username}/post_covers/{filename}"
 
 
 class Post(models.Model):
