@@ -10,6 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import sys
+import os
+
 from decouple import config
 
 from pathlib import Path
@@ -17,6 +20,7 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+TESTING = "test" in sys.argv or "PYTEST_VESION" in os.environ
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
@@ -37,16 +41,23 @@ ALLOWED_HOSTS = config(
 
 # Application definition
 
-INSTALLED_APPS = [
+DJANGO_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+]
+
+LOCAL_APPS = [
     "post",
     "account",
 ]
+
+DEVELOPMENT_APPS = ["debug_toolbar"]
+
+INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + DEVELOPMENT_APPS
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -144,3 +155,7 @@ EMAIL_USE_TLS = config("EMAIL_USE_TLS", default=True, cast=bool)
 EMAIL_HOST_USER = config("EMAIL_HOST_USER", default="")
 EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
 PASSWORD_RESET_TIMEOUT = config("PASSWORD_RESET_TIMEOUT", default=1800, cast=int)
+
+if DEBUG and not TESTING:
+    MIDDLEWARE = ["debug_toolbar.middleware.DebugToolbarMiddleware", *MIDDLEWARE]
+    INTERNAL_IPS = ["127.0.0.1"]
