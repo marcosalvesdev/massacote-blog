@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
 
-from post.models import Post
+from post.models import Post, post_cover_path
 
 
 class PostModelTests(TestCase):
@@ -59,3 +59,13 @@ class PostModelTests(TestCase):
         reading_time = post.reading_time
 
         self.assertEqual(reading_time, 1)
+
+
+class PostCoverPathTests(TestCase):
+    def test_path_is_keyed_by_author_username(self):
+        author = User.objects.create_user(username="author", password="pw12345")
+        post = Post(title="Title", author=author, content="hello")
+
+        path = post_cover_path(post, "cover.png")
+
+        self.assertEqual(path, "author/post_covers/cover.png")
