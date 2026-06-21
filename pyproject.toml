@@ -9,3 +9,8 @@ dependencies = [
     "pillow>=12.2.0",
     "python-decouple>=3.8",
 ]
+
+[dependency-groups]
+dev = [
+    "django-debug-toolbar>=7.0.0",
+]
