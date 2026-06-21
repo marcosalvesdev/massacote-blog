@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
 from django.views.generic import (
     ListView,
     CreateView,
@@ -16,6 +17,9 @@ class PostListView(ListView):
     context_object_name = "posts"
     paginate_by = 5
 
+    def get_queryset(self):
+        return Post.objects.all().order_by("-created_at").select_related("author")
+
 
 class PostDetailView(DetailView):
     model = Post
@@ -23,7 +27,7 @@ class PostDetailView(DetailView):
     context_object_name = "post"
 
     def get_queryset(self):
-        return Post.objects.filter(slug=self.kwargs["slug"])
+        return Post.objects.filter(slug=self.kwargs["slug"]).select_related("author")
 
 
 class PostCreateView(LoginRequiredMixin, CreateView):
@@ -41,6 +45,7 @@ class PostDeleteView(LoginRequiredMixin, DeleteView):
     model = Post
     template_name = "post/delete.html"
     context_object_name = "post"
+    success_url = reverse_lazy("post:list")
 
     def get_queryset(self):
         return Post.objects.filter(slug=self.kwargs["slug"], author=self.request.user)
