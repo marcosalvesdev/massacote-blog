@@ -6,3 +6,4 @@ __vscode__/
 .venv/
 .env
 media/
+.coverage

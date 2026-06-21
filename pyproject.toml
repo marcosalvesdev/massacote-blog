@@ -9,3 +9,21 @@ dependencies = [
     "pillow>=12.2.0",
     "python-decouple>=3.8",
 ]
+
+[dependency-groups]
+dev = [
+    "coverage>=7.14.2",
+    "django-debug-toolbar>=7.0.0",
+]
+
+[tool.coverage.run]
+source = ["post", "account"]
+omit = [
+    "*/migrations/*",
+    "*/tests/*",
+    "tests/*",
+    "manage.py",
+    "*/admin.py",
+    "*/apps.py",
+    "*/urls.py",
+]

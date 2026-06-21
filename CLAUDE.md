@@ -61,6 +61,8 @@ Cross-app integration tests (a flow that touches more than one app — signup cr
 
 **Fixtures.** No `factory_boy` or fixture files. Use plain helper methods on the `TestCase` (or a small `setUp`) to create a `User`/`Post`/`Profile` — keep them minimal (only the fields the test actually needs) rather than building a full "realistic" object every time.
 
+**Coverage.** `coverage run manage.py test && coverage report -m`. `[tool.coverage.run]` in `pyproject.toml` scopes this to `post`/`account` and omits migrations, `urls.py`, `admin.py`, `apps.py`, and the test packages themselves — those only ever get "covered" by Django's app loading at test-runner startup (or by being the tests), not by anything actually asserting on their behavior, so including them would inflate the number without meaning anything. If you add a new boilerplate-only file in that category, add it to `omit` rather than writing a test just to move a number.
+
 ## Git commit rules
 
 Commit when a unit of work is complete (a fix, a feature slice, a template/style change, etc.) — don't wait for explicit "commit this" requests, and don't batch unrelated changes into one commit.
