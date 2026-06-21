@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
 from django.views.generic import (
     ListView,
     CreateView,
@@ -44,6 +45,7 @@ class PostDeleteView(LoginRequiredMixin, DeleteView):
     model = Post
     template_name = "post/delete.html"
     context_object_name = "post"
+    success_url = reverse_lazy("post:list")
 
     def get_queryset(self):
         return Post.objects.filter(slug=self.kwargs["slug"], author=self.request.user)
