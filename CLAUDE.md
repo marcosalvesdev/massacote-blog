@@ -8,6 +8,8 @@ A personal blog (Django) for writing about tech and other topics. Currently scop
 
 Frontend follows a Medium-inspired design system (serif headlines, single centered reading column, no CSS framework/build step — see `post/static/post/css/style.css` and `templates/base.html`).
 
+Reuse the existing typography on every new page: the `--font-serif`/`--font-sans` variables and the established type treatments (serif for headlines and reading-column body, sans for nav/meta/buttons/secondary links). Do **not** introduce a different font or type treatment unless the user explicitly asks for it.
+
 ## Commands
 
 This project uses `uv` for dependency management (see `uv.lock`) with a `.venv` at the repo root.
