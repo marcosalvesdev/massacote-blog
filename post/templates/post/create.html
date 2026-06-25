@@ -1,6 +1,9 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Write a story — Massacote{% endblock %}
+
+{% block extra_css %}<link rel="stylesheet" href="{% static 'post/css/post.css' %}">{% endblock %}
 
 {% block content %}
 <form class="post-form" method="post" enctype="multipart/form-data">

@@ -1,6 +1,9 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}{{ post.title }} — Massacote{% endblock %}
+
+{% block extra_css %}<link rel="stylesheet" href="{% static 'post/css/post.css' %}">{% endblock %}
 
 {% block content %}
 <article class="article">
