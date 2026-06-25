@@ -8,7 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700;8..60,900&display=swap">
-    <link rel="stylesheet" href="{% static 'post/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_css %}{% endblock %}
 </head>
 <body>
     <header class="site-header">
@@ -35,10 +36,11 @@
     </main>
 
     <footer class="site-footer">
+        <p><a class="site-footer__about" href="{% url 'pages:about' %}">Sobre o desenvolvedor deste blog</a></p>
         <p>&copy; {% now "Y" %} Massacote.</p>
     </footer>
 
-    <script src="{% static 'post/js/autosize-textarea.js' %}"></script>
-    <script src="{% static 'post/js/password-toggle.js' %}"></script>
+    <script src="{% static 'js/autosize-textarea.js' %}"></script>
+    <script src="{% static 'js/password-toggle.js' %}"></script>
 </body>
 </html>

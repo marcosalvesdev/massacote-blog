@@ -1,6 +1,9 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Massacote — Home{% endblock %}
+
+{% block extra_css %}<link rel="stylesheet" href="{% static 'post/css/post.css' %}">{% endblock %}
 
 {% block content %}
 <div class="feed">

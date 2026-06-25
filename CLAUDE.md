@@ -8,6 +8,8 @@ A personal blog (Django) for writing about tech and other topics. Currently scop
 
 Frontend follows a Medium-inspired design system (serif headlines, single centered reading column, no CSS framework/build step — see `post/static/post/css/style.css` and `templates/base.html`).
 
+Reuse the existing typography on every new page: the `--font-serif`/`--font-sans` variables and the established type treatments (serif for headlines and reading-column body, sans for nav/meta/buttons/secondary links). Do **not** introduce a different font or type treatment unless the user explicitly asks for it.
+
 ## Commands
 
 This project uses `uv` for dependency management (see `uv.lock`) with a `.venv` at the repo root.
@@ -26,7 +28,7 @@ There is no configured linter/formatter in `pyproject.toml` yet — don't assume
 - `core/` is the Django project (settings, root `urls.py`); `post/` is the first domain app. Each new blog feature (comments, ratings, etc.) should be its own app under the same pattern rather than growing inside `post`.
 - Settings (`core/settings.py`) read `SECRET_KEY`, `DEBUG`, and `ALLOWED_HOSTS` from environment via `python-decouple` (`.env` file, gitignored).
 - Templates resolve from two places: the project-level `templates/` dir (`base.html`, shared layout) and each app's own `app/templates/app/` dir via `APP_DIRS`. All page templates extend `templates/base.html` and override `{% block content %}`.
-- Static assets are per-app (`post/static/post/css/style.css`), picked up by Django's app-static finder — no bundler.
+- Static assets are split by ownership, no bundler. The **global design system** (CSS variables, layout, header/footer, buttons, auth, profile, about — everything `base.html` and cross-app templates rely on) lives in the project-level `static/` dir (`static/css/style.css`, `static/js/`), registered via `STATICFILES_DIRS`. **App-specific** styles live in that app's own static dir (`post/static/post/css/post.css` holds the feed/article/post-form rules) and are loaded per-page via the `{% block extra_css %}` hook in `base.html` — only on the templates that need them, not globally. When adding styles, put genuinely shared/layout rules in the global stylesheet and domain-specific rules in the owning app's stylesheet rather than growing one mixed file.
 - `post/forms/` is a package (not a single `forms.py`); `PostForm` lives in `post/forms/post_form.py`. Follow this convention (one form per file) when adding forms rather than collapsing into a flat module.
 - `Post.slug` is auto-derived from `title` inside `PostForm.clean_title` (via `slugify`), and uniqueness is enforced there with a validation error — slugs aren't editable directly through the form.
 - `Post` exposes `get_excerpt()` (falls back to a 30-word truncation of `content` when no explicit `excerpt` is set) and a `reading_time` property (word count ÷ 200 wpm) — both are template-facing computed values, not stored fields beyond `excerpt` itself.

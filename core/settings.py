@@ -53,6 +53,7 @@ DJANGO_APPS = [
 LOCAL_APPS = [
     "post",
     "account",
+    "pages",
 ]
 
 DEVELOPMENT_APPS = ["debug_toolbar"]
@@ -136,9 +137,15 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_DIRS = [BASE_DIR / "static"]
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
+
+# About page author photo — referenced by URL (content/media, not a static
+# asset), so it isn't committed to the repo. Point it at a local media path in
+# dev (e.g. /media/about/me.png) and at the S3/CDN URL in production.
+ABOUT_PHOTO_URL = config("ABOUT_PHOTO_URL", default="")
 
 # Login and Logout configuration
 LOGIN_URL = "login"
