@@ -53,6 +53,7 @@ DJANGO_APPS = [
 LOCAL_APPS = [
     "post",
     "account",
+    "pages",
 ]
 
 DEVELOPMENT_APPS = ["debug_toolbar"]

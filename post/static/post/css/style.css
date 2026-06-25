@@ -113,6 +113,18 @@ a {
     padding: 1.5rem 24px;
 }
 
+.site-footer p {
+    margin: 0.25rem 0;
+}
+
+.site-footer__about {
+    color: var(--color-text-muted);
+}
+
+.site-footer__about:hover {
+    color: var(--color-accent);
+}
+
 /* Post feed (list) */
 
 .feed {
@@ -530,4 +542,63 @@ a {
     margin-top: 1.5rem;
     display: flex;
     gap: 1rem;
+}
+
+/* About page */
+
+.about {
+    max-width: var(--content-width);
+    margin: 0 auto;
+}
+
+.about__photo {
+    display: block;
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 0 0 1.5rem;
+}
+
+.about__title {
+    font-family: var(--font-serif);
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--color-heading);
+    line-height: 1.2;
+    margin: 0 0 1.5rem;
+}
+
+.about__body {
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    line-height: 1.7;
+}
+
+.about__body p {
+    margin: 0 0 1.25rem;
+}
+
+.about__socials {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+}
+
+.about__social {
+    display: inline-flex;
+    color: var(--color-text-muted);
+}
+
+.about__social:hover {
+    color: var(--color-accent);
+}
+
+.about__social svg {
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+    display: block;
 }
