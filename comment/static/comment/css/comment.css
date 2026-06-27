@@ -106,3 +106,15 @@
     font-size: 0.85rem;
     color: var(--color-text-muted);
 }
+
+.comment-form__char-count {
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin-left: auto;
+    margin-right: 0.75rem;
+}
+
+.comment-form__char-count--warn {
+    color: #b3261e;
+}

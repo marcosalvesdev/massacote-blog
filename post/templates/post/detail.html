@@ -8,6 +8,10 @@
 <link rel="stylesheet" href="{% static 'comment/css/comment.css' %}">
 {% endblock %}
 
+{% block extra_js %}
+<script src="{% static 'comment/js/char-counter.js' %}"></script>
+{% endblock %}
+
 {% block content %}
 <article class="article">
     {% if post.cover_image %}
