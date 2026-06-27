@@ -15,7 +15,7 @@ class PostListView(ListView):
     model = Post
     template_name = "post/list.html"
     context_object_name = "posts"
-    paginate_by = 5
+    paginate_by = 20
 
     def get_queryset(self):
         return Post.objects.all().order_by("-created_at").select_related("author")
