@@ -34,10 +34,15 @@
 {% if is_paginated %}
     <nav class="pagination">
         {% if page_obj.has_previous %}
-            <a href="?page={{ page_obj.previous_page_number }}">&larr; Newer</a>
+            <a class="pagination__btn" href="?page={{ page_obj.previous_page_number }}">&larr; Newer</a>
+        {% else %}
+            <span></span>
         {% endif %}
+        <span class="pagination__info">{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
         {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}">Older &rarr;</a>
+            <a class="pagination__btn" href="?page={{ page_obj.next_page_number }}">Older &rarr;</a>
+        {% else %}
+            <span></span>
         {% endif %}
     </nav>
 {% endif %}

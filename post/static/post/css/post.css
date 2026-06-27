@@ -70,6 +70,36 @@
     padding: 3rem 0;
 }
 
+/* Pagination */
+
+.pagination {
+    max-width: var(--content-width);
+    margin: 2rem auto 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.pagination__btn {
+    display: inline-block;
+    padding: 0.5rem 1.2rem;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    color: var(--color-text);
+}
+
+.pagination__btn:hover {
+    border-color: var(--color-text-muted);
+}
+
+.pagination__info {
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+}
+
 /* Article (detail) */
 
 .article {
