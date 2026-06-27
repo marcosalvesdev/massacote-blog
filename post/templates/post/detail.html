@@ -3,7 +3,14 @@
 
 {% block title %}{{ post.title }} — Massacote{% endblock %}
 
-{% block extra_css %}<link rel="stylesheet" href="{% static 'post/css/post.css' %}">{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'post/css/post.css' %}">
+<link rel="stylesheet" href="{% static 'comment/css/comment.css' %}">
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'comment/js/char-counter.js' %}"></script>
+{% endblock %}
 
 {% block content %}
 <article class="article">
@@ -21,4 +28,6 @@
     <div class="article__body">{{ post.content }}</div>
     <a class="article__back" href="{% url 'post:list' %}">&larr; Back to all posts</a>
 </article>
+
+{% include "comment/comment_section.html" %}
 {% endblock %}

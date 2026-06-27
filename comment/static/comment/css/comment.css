@@ -1,0 +1,120 @@
+/* Comments section */
+
+.comments {
+    max-width: var(--content-width);
+    margin: 3rem auto 0;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-border);
+}
+
+.comments__heading {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-heading);
+    margin: 0 0 1.5rem;
+}
+
+.comments__empty {
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+    margin: 0 0 2rem;
+}
+
+.comments__login-prompt {
+    font-size: 0.95rem;
+    color: var(--color-text-muted);
+}
+
+.comments__login-prompt a {
+    color: var(--color-accent);
+}
+
+/* Individual comment */
+
+.comment {
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.comment__meta {
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin-bottom: 0.5rem;
+}
+
+.comment__author {
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.comment__body {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 0;
+    white-space: pre-wrap;
+}
+
+/* Comment form */
+
+.comment-form-wrap {
+    margin-top: 2rem;
+}
+
+.comment-form__heading {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-heading);
+    margin: 0 0 0.75rem;
+}
+
+.comment-form__body {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    color: var(--color-text);
+    line-height: 1.6;
+    resize: vertical;
+    display: block;
+}
+
+.comment-form__body:focus {
+    outline: none;
+    border-color: var(--color-text-muted);
+}
+
+.comment-form__error {
+    color: #b3261e;
+    font-size: 0.9rem;
+    margin: 0.4rem 0 0;
+}
+
+.comment-form__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 0.75rem;
+}
+
+.comment-form__hint {
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+}
+
+.comment-form__char-count {
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin-left: auto;
+    margin-right: 0.75rem;
+}
+
+.comment-form__char-count--warn {
+    color: #b3261e;
+}

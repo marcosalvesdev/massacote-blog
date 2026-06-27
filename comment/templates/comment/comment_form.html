@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Leave a comment — Massacote{% endblock %}
+
+{% block extra_css %}<link rel="stylesheet" href="{% static 'comment/css/comment.css' %}">{% endblock %}
+
+{% block content %}
+<div class="comment-form-wrap" style="max-width: var(--content-width); margin: 0 auto;">
+    <h2 class="comments__heading">Leave a comment</h2>
+    <form class="comment-form" method="post">
+        {% csrf_token %}
+        <textarea
+            class="comment-form__body"
+            name="content"
+            rows="4"
+            placeholder="Share your thoughts…"
+            maxlength="500"
+        >{{ form.content.value|default:'' }}</textarea>
+        {% if form.content.errors %}
+            <p class="comment-form__error">{{ form.content.errors.0 }}</p>
+        {% endif %}
+        <div class="comment-form__footer">
+            <span class="comment-form__hint">Commenting as {{ user.username }}</span>
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
