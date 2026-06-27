@@ -60,7 +60,7 @@ LOCAL_APPS = [
     "comment",
 ]
 
-DEVELOPMENT_APPS = ["debug_toolbar"]
+DEVELOPMENT_APPS = []
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + DEVELOPMENT_APPS
 
@@ -168,5 +168,6 @@ EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
 PASSWORD_RESET_TIMEOUT = config("PASSWORD_RESET_TIMEOUT", default=1800, cast=int)
 
 if DEBUG and not TESTING:
+    INSTALLED_APPS += ["debug_toolbar"]
     MIDDLEWARE = ["debug_toolbar.middleware.DebugToolbarMiddleware", *MIDDLEWARE]
     INTERNAL_IPS = ["127.0.0.1"]
