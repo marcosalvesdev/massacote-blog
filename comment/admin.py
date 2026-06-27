@@ -9,3 +9,4 @@ class CommentAdmin(admin.ModelAdmin):
     list_filter = ["is_approved"]
     list_editable = ["is_approved"]
     ordering = ["-created_at"]
+    list_per_page = 20
