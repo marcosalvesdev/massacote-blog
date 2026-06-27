@@ -13,6 +13,7 @@
                     rows="4"
                     placeholder="Share your thoughts…"
                     maxlength="500"
+                    required
                 >{{ comment_form.content.value|default:'' }}</textarea>
                 {% if comment_form.content.errors %}
                     <p class="comment-form__error">{{ comment_form.content.errors.0 }}</p>
