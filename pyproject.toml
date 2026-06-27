@@ -14,6 +14,7 @@ dependencies = [
 dev = [
     "coverage>=7.14.2",
     "django-debug-toolbar>=7.0.0",
+    "faker>=40.23.0",
 ]
 
 [tool.coverage.run]
