@@ -7,8 +7,12 @@ from django.views.generic import (
     UpdateView,
     DeleteView,
 )
+from django.db.models import Prefetch
+
+from comment.models import Comment
 from post.models import Post
 from post.forms.post_form import PostForm
+from comment.forms.comment_form import CommentForm
 
 
 class PostListView(ListView):
@@ -27,7 +31,24 @@ class PostDetailView(DetailView):
     context_object_name = "post"
 
     def get_queryset(self):
-        return Post.objects.filter(slug=self.kwargs["slug"]).select_related("author")
+        return (
+            Post.objects.filter(slug=self.kwargs["slug"])
+            .select_related("author")
+            .prefetch_related(
+                Prefetch(
+                    "comments",
+                    queryset=Comment.objects.filter(is_approved=True).select_related(
+                        "author"
+                    ),
+                )
+            )
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["comments"] = self.object.comments.all()
+        context["comment_form"] = CommentForm()
+        return context
 
 
 class PostCreateView(LoginRequiredMixin, CreateView):

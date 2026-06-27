@@ -1,0 +1,44 @@
+<section class="comments">
+    <h2 class="comments__heading">
+        {{ comments.count }} Comment{{ comments.count|pluralize }}
+    </h2>
+
+    <div class="comment-form-wrap">
+        {% if user.is_authenticated %}
+            <form class="comment-form" method="post" action="{% url 'comment:comment_create' slug=post.slug %}">
+                {% csrf_token %}
+                <textarea
+                    class="comment-form__body"
+                    name="content"
+                    rows="4"
+                    placeholder="Share your thoughts…"
+                    maxlength="500"
+                >{{ comment_form.content.value|default:'' }}</textarea>
+                {% if comment_form.content.errors %}
+                    <p class="comment-form__error">{{ comment_form.content.errors.0 }}</p>
+                {% endif %}
+                <div class="comment-form__footer">
+                    <span class="comment-form__hint">Commenting as {{ user.username }}</span>
+                    <button class="btn btn-primary" type="submit">Submit</button>
+                </div>
+            </form>
+        {% else %}
+            <p class="comments__login-prompt">
+                <a href="{% url 'login' %}?next={{ request.path }}">Sign in</a> to leave a comment.
+            </p>
+        {% endif %}
+    </div>
+
+    {% for comment in comments %}
+        <div class="comment">
+            <div class="comment__meta">
+                <span class="comment__author">{{ comment.author.get_full_name|default:comment.author.username }}</span>
+                <span class="dot"></span>
+                <span class="comment__date">{{ comment.created_at|date:"M j, Y" }}</span>
+            </div>
+            <p class="comment__body">{{ comment.content }}</p>
+        </div>
+    {% empty %}
+        <p class="comments__empty">No comments yet. Be the first to leave one.</p>
+    {% endfor %}
+</section>

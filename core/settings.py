@@ -54,6 +54,7 @@ LOCAL_APPS = [
     "post",
     "account",
     "pages",
+    "comment",
 ]
 
 DEVELOPMENT_APPS = ["debug_toolbar"]
