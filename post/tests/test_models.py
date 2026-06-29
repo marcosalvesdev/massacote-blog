@@ -1,7 +1,8 @@
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from django.test import TestCase
 
-from post.models import Post, post_cover_path
+from post.models import Post, Status, post_cover_path
 
 
 class PostModelTests(TestCase):
@@ -59,6 +60,38 @@ class PostModelTests(TestCase):
         reading_time = post.reading_time
 
         self.assertEqual(reading_time, 1)
+
+
+class PostCleanTests(TestCase):
+    def setUp(self):
+        self.author = User.objects.create_user(username="author", password="pw12345")
+
+    def _post(self, status, is_approved):
+        return Post(
+            title="T", slug="t", author=self.author, content="x",
+            status=status, is_approved=is_approved,
+        )
+
+    def test_published_without_approval_raises(self):
+        post = self._post(Status.PUBLISHED, is_approved=False)
+
+        with self.assertRaises(ValidationError):
+            post.clean()
+
+    def test_published_and_approved_does_not_raise(self):
+        post = self._post(Status.PUBLISHED, is_approved=True)
+
+        post.clean()
+
+    def test_draft_without_approval_does_not_raise(self):
+        post = self._post(Status.DRAFT, is_approved=False)
+
+        post.clean()
+
+    def test_pending_without_approval_does_not_raise(self):
+        post = self._post(Status.PENDING, is_approved=False)
+
+        post.clean()
 
 
 class PostCoverPathTests(TestCase):
