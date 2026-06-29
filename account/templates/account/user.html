@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}{{ profile_user.username }} — Massacote{% endblock %}
 
@@ -21,6 +22,7 @@
     {% endif %}
 
     <div class="profile-page__actions">
+        <a class="btn btn-secondary" href="{% url 'post:mine' %}">My posts</a>
         <a class="btn btn-secondary" href="{% url 'account:update' username=profile_user.username %}">Edit profile</a>
         <a class="btn btn-secondary" href="{% url 'password_change' %}">Change password</a>
         <a class="btn btn-danger" href="{% url 'account:delete' username=profile_user.username %}">Delete account</a>

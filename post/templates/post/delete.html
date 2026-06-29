@@ -9,7 +9,11 @@
     <p class="confirm-form__body">This can't be undone.</p>
     <div class="form-actions">
         <button type="submit" class="btn btn-danger">Delete</button>
-        <a class="btn btn-secondary" href="{{ object.get_absolute_url }}">Cancel</a>
+        {% if object.status == 'draft' %}
+            <a class="btn btn-secondary" href="{% url 'post:mine' %}">Cancel</a>
+        {% else %}
+            <a class="btn btn-secondary" href="{{ object.get_absolute_url }}">Cancel</a>
+        {% endif %}
     </div>
 </form>
 {% endblock %}

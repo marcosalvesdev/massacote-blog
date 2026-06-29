@@ -28,8 +28,8 @@
     {{ form.content }}
 
     <div class="form-actions">
-        <button type="submit" class="btn btn-primary">Publish</button>
-        <a class="btn btn-secondary" href="{% url 'post:list' %}">Cancel</a>
+        <button type="submit" name="action" value="draft" class="btn btn-secondary">Save draft</button>
+        <button type="submit" name="action" value="publish" class="btn btn-primary">Submit for review</button>
     </div>
 </form>
 {% endblock %}
