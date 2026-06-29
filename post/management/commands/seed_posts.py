@@ -4,7 +4,7 @@ from django.utils.text import slugify
 
 from faker import Faker
 
-from post.models import Post
+from post.models import Post, Status
 
 User = get_user_model()
 fake = Faker()
@@ -94,6 +94,7 @@ class Command(BaseCommand):
                     content="\n\n".join(fake.paragraphs(nb=5)),
                     excerpt=fake.sentence(nb_words=20),
                     slug=slug,
+                    status=Status.PUBLISHED,
                 )
 
     def _unique_slug(self, title: str) -> str:
