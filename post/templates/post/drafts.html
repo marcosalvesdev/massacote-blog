@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}My Drafts — Massacote{% endblock %}
+
+{% block extra_css %}<link rel="stylesheet" href="{% static 'post/css/post.css' %}">{% endblock %}
+
+{% block content %}
+<div class="feed">
+    <h1 class="feed__heading">My Drafts</h1>
+
+    {% for post in drafts %}
+        <article class="feed-item">
+            <div class="feed-item__text">
+                <h2 class="feed-item__title">
+                    <a href="{% url 'post:update' slug=post.slug %}">{{ post.title }}</a>
+                </h2>
+                <p class="feed-item__excerpt">{{ post.get_excerpt }}</p>
+                <p class="feed-item__meta">
+                    {{ post.created_at|date:"M j, Y" }}
+                    <span class="dot"></span>{{ post.reading_time }} min read
+                </p>
+                <div class="feed-item__actions">
+                    <form method="post" action="{% url 'post:publish' slug=post.slug %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary btn--sm">Publish</button>
+                    </form>
+                    <a class="btn btn-secondary btn--sm" href="{% url 'post:update' slug=post.slug %}">Edit</a>
+                    <a class="btn btn-danger btn--sm" href="{% url 'post:delete' slug=post.slug %}">Delete</a>
+                </div>
+            </div>
+            {% if post.cover_image %}
+                <div class="feed-item__thumb">
+                    <img src="{{ post.cover_image.url }}" alt="">
+                </div>
+            {% endif %}
+        </article>
+    {% empty %}
+        <p class="feed-empty">No drafts yet. <a href="{% url 'post:create' %}">Write something</a>.</p>
+    {% endfor %}
+</div>
+
+{% if is_paginated %}
+    <nav class="pagination">
+        {% if page_obj.has_previous %}
+            <a class="pagination__btn" href="?page={{ page_obj.previous_page_number }}">&larr; Newer</a>
+        {% else %}
+            <span></span>
+        {% endif %}
+        <span class="pagination__info">{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+            <a class="pagination__btn" href="?page={{ page_obj.next_page_number }}">Older &rarr;</a>
+        {% else %}
+            <span></span>
+        {% endif %}
+    </nav>
+{% endif %}
+{% endblock %}
