@@ -3,7 +3,7 @@ from django.test import TestCase, Client
 from django.urls import reverse
 
 from comment.models import Comment
-from post.models import Post
+from post.models import Post, Status
 
 
 class CommentCreateViewTest(TestCase):
@@ -15,6 +15,8 @@ class CommentCreateViewTest(TestCase):
             slug="a-post",
             content="Some content.",
             author=self.user,
+            status=Status.PUBLISHED,
+            is_approved=True,
         )
         self.url = reverse("comment:comment_create", kwargs={"slug": self.post.slug})
 

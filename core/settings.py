@@ -22,6 +22,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 TESTING = "test" in sys.argv or "PYTEST_VESION" in os.environ
 
+if TESTING:
+    PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
@@ -57,7 +60,7 @@ LOCAL_APPS = [
     "comment",
 ]
 
-DEVELOPMENT_APPS = ["debug_toolbar"]
+DEVELOPMENT_APPS = []
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + DEVELOPMENT_APPS
 
@@ -165,5 +168,8 @@ EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
 PASSWORD_RESET_TIMEOUT = config("PASSWORD_RESET_TIMEOUT", default=1800, cast=int)
 
 if DEBUG and not TESTING:
+    INSTALLED_APPS += ["debug_toolbar"]
     MIDDLEWARE = ["debug_toolbar.middleware.DebugToolbarMiddleware", *MIDDLEWARE]
     INTERNAL_IPS = ["127.0.0.1"]
+    # https://django-debug-toolbar.readthedocs.io/en/latest/configuration.html#update-on-fetch
+    DEBUG_TOOLBAR_CONFIG = {"UPDATE_ON_FETCH": True}

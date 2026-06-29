@@ -66,3 +66,9 @@ class PostFormTests(TestCase):
 
         self.assertFalse(form.is_valid())
         self.assertIn("title", form.errors)
+
+    def test_title_producing_empty_slug_is_rejected(self):
+        form = PostForm(data={"title": "!!!", "excerpt": "", "content": "x"})
+
+        self.assertFalse(form.is_valid())
+        self.assertIn("title", form.errors)

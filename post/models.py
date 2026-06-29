@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.text import Truncator
 
@@ -8,6 +9,12 @@ def post_cover_path(instance, filename):
     return f"{instance.author.username}/post_covers/{filename}"
 
 
+class Status(models.TextChoices):
+    DRAFT = "draft", "Draft"
+    PUBLISHED = "published", "Published"
+    PENDING = "pending", "Pending"
+
+
 class Post(models.Model):
     title = models.CharField(max_length=200)
     author = models.ForeignKey("auth.User", on_delete=models.CASCADE)
@@ -15,8 +22,16 @@ class Post(models.Model):
     excerpt = models.CharField(max_length=300, blank=True)
     slug = models.SlugField(unique=True)
     cover_image = models.ImageField(upload_to=post_cover_path, blank=True, null=True)
+    status = models.CharField(
+        max_length=10, choices=Status.choices, default=Status.DRAFT
+    )
+    is_approved = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def clean(self):
+        if self.status == Status.PUBLISHED and not self.is_approved:
+            raise ValidationError("A post cannot be published without being approved first.")
 
     def __str__(self):
         return self.title

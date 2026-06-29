@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}My posts — Massacote{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'post/css/post.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="profile-page">
+    <h1 class="profile-page__name">My posts</h1>
+
+    <div class="profile-posts">
+        <div class="profile-tabs">
+            <button class="profile-tab profile-tab--active"
+                    hx-get="{% url 'post:mine_by_status' 'draft' %}"
+                    hx-target="#user-posts"
+                    hx-swap="innerHTML">
+                Drafts <span class="profile-tab__count">{{ draft_count }}</span>
+            </button>
+            <button class="profile-tab"
+                    hx-get="{% url 'post:mine_by_status' 'pending' %}"
+                    hx-target="#user-posts"
+                    hx-swap="innerHTML">
+                Pending <span class="profile-tab__count">{{ pending_count }}</span>
+            </button>
+            <button class="profile-tab"
+                    hx-get="{% url 'post:mine_by_status' 'published' %}"
+                    hx-target="#user-posts"
+                    hx-swap="innerHTML">
+                Published <span class="profile-tab__count">{{ published_count }}</span>
+            </button>
+        </div>
+
+        <div id="user-posts" class="profile-posts__section">
+            {% include "post/partials/_user_posts.html" %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.querySelectorAll(".profile-tab").forEach(function(tab) {
+        tab.addEventListener("click", function() {
+            document.querySelectorAll(".profile-tab").forEach(t => t.classList.remove("profile-tab--active"));
+            tab.classList.add("profile-tab--active");
+        });
+    });
+</script>
+{% endblock %}

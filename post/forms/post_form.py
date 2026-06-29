@@ -14,6 +14,8 @@ class PostForm(forms.ModelForm):
     def clean_title(self):
         title = self.cleaned_data["title"]
         slug = slugify(title)
+        if not slug:
+            raise forms.ValidationError("O título não é válido. Use letras ou números.")
         if Post.objects.filter(slug=slug).exclude(pk=self.instance.pk).exists():
             raise forms.ValidationError(
                 "Já existe um post com este título. Escolha um título diferente."

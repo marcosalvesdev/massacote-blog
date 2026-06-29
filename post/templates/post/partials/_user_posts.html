@@ -1,0 +1,42 @@
+{% for post in posts %}
+    <div class="profile-post">
+        {% if status == "published" %}
+            <a class="profile-post__title" href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+        {% else %}
+            <span class="profile-post__title">{{ post.title }}</span>
+        {% endif %}
+        <span class="profile-post__meta">{{ post.created_at|date:"M j, Y" }}</span>
+        <div class="profile-post__actions">
+            <a class="btn btn-secondary btn--sm" href="{% url 'post:update' slug=post.slug %}">Edit</a>
+            <a class="btn btn-danger btn--sm" href="{% url 'post:delete' slug=post.slug %}">Delete</a>
+        </div>
+    </div>
+{% empty %}
+    <p class="profile-posts__empty">
+        {% if status == "published" %}
+            No published posts yet.
+        {% elif status == "pending" %}
+            No posts pending approval.
+        {% else %}
+            No drafts yet. <a href="{% url 'post:create' %}">Start writing</a>.
+        {% endif %}
+    </p>
+{% endfor %}
+
+{% if posts.paginator.num_pages > 1 %}
+<div class="pagination">
+    {% if posts.has_previous %}
+        <a class="pagination__btn"
+           hx-get="{% url 'post:mine_by_status' status %}?page={{ posts.previous_page_number }}"
+           hx-target="#user-posts"
+           hx-swap="innerHTML">← Previous</a>
+    {% endif %}
+    <span class="pagination__info">{{ posts.number }} / {{ posts.paginator.num_pages }}</span>
+    {% if posts.has_next %}
+        <a class="pagination__btn"
+           hx-get="{% url 'post:mine_by_status' status %}?page={{ posts.next_page_number }}"
+           hx-target="#user-posts"
+           hx-swap="innerHTML">Next →</a>
+    {% endif %}
+</div>
+{% endif %}
