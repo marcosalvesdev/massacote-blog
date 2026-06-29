@@ -171,3 +171,5 @@ if DEBUG and not TESTING:
     INSTALLED_APPS += ["debug_toolbar"]
     MIDDLEWARE = ["debug_toolbar.middleware.DebugToolbarMiddleware", *MIDDLEWARE]
     INTERNAL_IPS = ["127.0.0.1"]
+    # https://django-debug-toolbar.readthedocs.io/en/latest/configuration.html#update-on-fetch
+    DEBUG_TOOLBAR_CONFIG = {"UPDATE_ON_FETCH": True}
