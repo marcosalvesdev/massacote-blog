@@ -3,13 +3,13 @@ from django.test import TestCase
 from django.urls import reverse
 
 from account.models import Profile
-from post.models import Post
+from post.models import Post, Status
 
 
 class SignupLoginAndPostFlowTests(TestCase):
     """End-to-end walk through signup -> profile creation -> authoring a post."""
 
-    def test_new_user_can_sign_up_log_in_and_publish_a_post(self):
+    def test_new_user_can_sign_up_log_in_and_submit_a_post_for_review(self):
         signup_response = self.client.post(
             reverse("account:create"),
             {
@@ -28,11 +28,13 @@ class SignupLoginAndPostFlowTests(TestCase):
 
         create_response = self.client.post(
             reverse("post:create"),
-            {"title": "My First Post", "excerpt": "", "content": "Hello, blog!"},
+            {"title": "My First Post", "excerpt": "", "content": "Hello, blog!", "action": "publish"},
         )
         post = Post.objects.get(slug="my-first-post")
-        self.assertRedirects(create_response, post.get_absolute_url())
+        self.assertRedirects(create_response, reverse("post:mine"))
         self.assertEqual(post.author, user)
+        self.assertEqual(post.status, Status.PENDING)
 
+        # PENDING posts require admin approval before appearing in the public feed
         list_response = self.client.get(reverse("post:list"))
-        self.assertContains(list_response, "My First Post")
+        self.assertNotContains(list_response, "My First Post")
