@@ -100,6 +100,13 @@ class PostUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         if self.object.status == Status.PUBLISHED:
+            # TODO: I have to change this logic because if the
+            # post was already published it means that it was
+            # already approved so if the user changes the post
+            # content it has to be moderated again and its
+            # status needs to be changed to pending. After that
+            # the user will be redirected to his posts list.
+
             return self.object.get_absolute_url()
         return reverse("post:mine")
 
