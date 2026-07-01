@@ -29,10 +29,6 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def clean(self):
-        if self.status == Status.PUBLISHED and not self.is_approved:
-            raise ValidationError("A post cannot be published without being approved first.")
-
     def __str__(self):
         return self.title
 
@@ -48,3 +44,9 @@ class Post(models.Model):
     def reading_time(self):
         word_count = len(self.content.split())
         return max(1, round(word_count / READING_WORDS_PER_MINUTE))
+
+    def clean(self):
+        if self.status == Status.PUBLISHED and not self.is_approved:
+            raise ValidationError(
+                "A post cannot be published without being approved first."
+            )

@@ -28,7 +28,12 @@ class SignupLoginAndPostFlowTests(TestCase):
 
         create_response = self.client.post(
             reverse("post:create"),
-            {"title": "My First Post", "excerpt": "", "content": "Hello, blog!", "action": "publish"},
+            {
+                "title": "My First Post",
+                "excerpt": "",
+                "content": "Hello, blog!",
+                "action": "publish",
+            },
         )
         post = Post.objects.get(slug="my-first-post")
         self.assertRedirects(create_response, reverse("post:mine"))

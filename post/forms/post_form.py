@@ -1,5 +1,6 @@
 from django import forms
 from django.utils.text import slugify
+
 from post.models import Post
 
 

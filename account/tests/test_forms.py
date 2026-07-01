@@ -38,7 +38,9 @@ class ProfileFormTests(TestCase):
 
     def test_bio_is_saved(self):
         user = User.objects.create_user(username="marcos", password="pw12345")
-        form = ProfileForm(data={"bio": "Hello, I write about tech."}, instance=user.profile)
+        form = ProfileForm(
+            data={"bio": "Hello, I write about tech."}, instance=user.profile
+        )
 
         form.save()
 

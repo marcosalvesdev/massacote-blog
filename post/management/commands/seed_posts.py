@@ -1,7 +1,6 @@
-from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
+from django.core.management.base import BaseCommand
 from django.utils.text import slugify
-
 from faker import Faker
 
 from post.models import Post, Status
@@ -21,7 +20,7 @@ class Command(BaseCommand):
         parser.add_argument(
             "--clear-only",
             action="store_true",
-            help="Remove all existing posts and non-superuser users without seeding new data.",
+            help="Remove all existing posts and non-superuser users without seeding new data.",  # noqa: E501
         )
         parser.add_argument(
             "--clear",

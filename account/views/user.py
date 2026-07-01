@@ -1,12 +1,11 @@
 from django.contrib.auth import get_user_model
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import UserCreationForm
-from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse, reverse_lazy
+from django.views.generic import CreateView, DeleteView, DetailView, UpdateView
 
 from account.forms.profile import ProfileForm
 from account.forms.user import UserForm
-
 
 User = get_user_model()
 

@@ -5,17 +5,17 @@ from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.views import View
 from django.views.generic import (
-    ListView,
     CreateView,
-    DetailView,
-    UpdateView,
     DeleteView,
+    DetailView,
+    ListView,
+    UpdateView,
 )
 
-from comment.models import Comment
-from post.models import Post, Status
-from post.forms.post_form import PostForm
 from comment.forms.comment_form import CommentForm
+from comment.models import Comment
+from post.forms.post_form import PostForm
+from post.models import Post, Status
 
 
 class PostListView(ListView):

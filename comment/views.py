@@ -1,11 +1,11 @@
-from django.views.generic import CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse_lazy
 from django.shortcuts import get_object_or_404
+from django.urls import reverse_lazy
+from django.views.generic import CreateView
 
+from comment.forms.comment_form import CommentForm
 from comment.models import Comment
 from post.models import Post
-from comment.forms.comment_form import CommentForm
 
 
 class CommentCreateView(LoginRequiredMixin, CreateView):

@@ -10,8 +10,13 @@ from post.models import Post, Status
 
 def make_post(author, title, slug, status=Status.DRAFT, is_approved=False, **kwargs):
     return Post.objects.create(
-        title=title, slug=slug, author=author, content="x",
-        status=status, is_approved=is_approved, **kwargs,
+        title=title,
+        slug=slug,
+        author=author,
+        content="x",
+        status=status,
+        is_approved=is_approved,
+        **kwargs,
     )
 
 
@@ -23,8 +28,12 @@ class PostListViewTests(TestCase):
 
     def test_list_orders_posts_newest_first(self):
         author = User.objects.create_user(username="author", password="pw12345")
-        older = make_post(author, "Older", "older", status=Status.PUBLISHED, is_approved=True)
-        newer = make_post(author, "Newer", "newer", status=Status.PUBLISHED, is_approved=True)
+        older = make_post(
+            author, "Older", "older", status=Status.PUBLISHED, is_approved=True
+        )
+        newer = make_post(
+            author, "Newer", "newer", status=Status.PUBLISHED, is_approved=True
+        )
         Post.objects.filter(pk=older.pk).update(
             created_at=timezone.now() - timedelta(days=1)
         )
@@ -37,7 +46,13 @@ class PostListViewTests(TestCase):
         author = User.objects.create_user(username="author", password="pw12345")
         make_post(author, "Draft", "draft", status=Status.DRAFT)
         make_post(author, "Pending", "pending", status=Status.PENDING)
-        make_post(author, "Unapproved", "unapproved", status=Status.PUBLISHED, is_approved=False)
+        make_post(
+            author,
+            "Unapproved",
+            "unapproved",
+            status=Status.PUBLISHED,
+            is_approved=False,
+        )
 
         response = self.client.get(reverse("post:list"))
 
@@ -48,8 +63,11 @@ class PostDetailViewTests(TestCase):
     def setUp(self):
         self.author = User.objects.create_user(username="author", password="pw12345")
         self.post = make_post(
-            self.author, "A Post", "a-post",
-            status=Status.PUBLISHED, is_approved=True,
+            self.author,
+            "A Post",
+            "a-post",
+            status=Status.PUBLISHED,
+            is_approved=True,
         )
 
     def test_existing_slug_returns_ok(self):
@@ -111,7 +129,12 @@ class PostCreateViewTests(TestCase):
 
         self.client.post(
             reverse("post:create"),
-            {"title": "Review Post", "excerpt": "", "content": "hello", "action": "publish"},
+            {
+                "title": "Review Post",
+                "excerpt": "",
+                "content": "hello",
+                "action": "publish",
+            },
         )
 
         post = Post.objects.get(slug="review-post")
@@ -129,7 +152,12 @@ class PostUpdateViewTests(TestCase):
 
         response = self.client.post(
             reverse("post:update", kwargs={"slug": "original"}),
-            {"title": "Original", "excerpt": "", "content": "updated body", "action": "draft"},
+            {
+                "title": "Original",
+                "excerpt": "",
+                "content": "updated body",
+                "action": "draft",
+            },
         )
 
         self.post.refresh_from_db()
@@ -141,7 +169,12 @@ class PostUpdateViewTests(TestCase):
 
         self.client.post(
             reverse("post:update", kwargs={"slug": "original"}),
-            {"title": "Original", "excerpt": "", "content": "body", "action": "publish"},
+            {
+                "title": "Original",
+                "excerpt": "",
+                "content": "body",
+                "action": "publish",
+            },
         )
 
         self.post.refresh_from_db()
@@ -150,9 +183,7 @@ class PostUpdateViewTests(TestCase):
     def test_non_owner_cannot_update_someone_elses_post(self):
         self.client.force_login(self.other_user)
 
-        response = self.client.get(
-            reverse("post:update", kwargs={"slug": "original"})
-        )
+        response = self.client.get(reverse("post:update", kwargs={"slug": "original"}))
 
         self.assertEqual(response.status_code, 404)
 
@@ -244,7 +275,9 @@ class UserPostsByStatusViewTests(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertQuerySetEqual(response.context["posts"], ["draft"], transform=lambda p: p.slug)
+        self.assertQuerySetEqual(
+            response.context["posts"], ["draft"], transform=lambda p: p.slug
+        )
 
     def test_pending_status_returns_only_pending(self):
         make_post(self.author, "Draft", "draft", status=Status.DRAFT)
@@ -255,18 +288,34 @@ class UserPostsByStatusViewTests(TestCase):
             reverse("post:mine_by_status", kwargs={"status": "pending"})
         )
 
-        self.assertQuerySetEqual(response.context["posts"], ["pending"], transform=lambda p: p.slug)
+        self.assertQuerySetEqual(
+            response.context["posts"], ["pending"], transform=lambda p: p.slug
+        )
 
     def test_published_status_excludes_unapproved(self):
-        make_post(self.author, "Published", "published", status=Status.PUBLISHED, is_approved=True)
-        make_post(self.author, "Unapproved", "unapproved", status=Status.PUBLISHED, is_approved=False)
+        make_post(
+            self.author,
+            "Published",
+            "published",
+            status=Status.PUBLISHED,
+            is_approved=True,
+        )
+        make_post(
+            self.author,
+            "Unapproved",
+            "unapproved",
+            status=Status.PUBLISHED,
+            is_approved=False,
+        )
         self.client.force_login(self.author)
 
         response = self.client.get(
             reverse("post:mine_by_status", kwargs={"status": "published"})
         )
 
-        self.assertQuerySetEqual(response.context["posts"], ["published"], transform=lambda p: p.slug)
+        self.assertQuerySetEqual(
+            response.context["posts"], ["published"], transform=lambda p: p.slug
+        )
 
     def test_posts_from_other_authors_are_excluded(self):
         other = User.objects.create_user(username="other", password="pw12345")

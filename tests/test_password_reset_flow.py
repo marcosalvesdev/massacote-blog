@@ -48,7 +48,10 @@ class PasswordResetFlowTests(TestCase):
 
         confirm_post_response = self.client.post(
             set_password_url,
-            {"new_password1": "a-brand-new-pw-456", "new_password2": "a-brand-new-pw-456"},
+            {
+                "new_password1": "a-brand-new-pw-456",
+                "new_password2": "a-brand-new-pw-456",
+            },
         )
         self.assertRedirects(confirm_post_response, reverse("password_reset_complete"))
 
