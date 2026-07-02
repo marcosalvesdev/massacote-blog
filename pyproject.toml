@@ -23,7 +23,7 @@ dev = [
 ]
 
 [tool.coverage.run]
-source = ["post", "account"]
+source = ["post", "account", "comment"]
 omit = [
     "*/migrations/*",
     "*/tests/*",
@@ -32,7 +32,12 @@ omit = [
     "*/admin.py",
     "*/apps.py",
     "*/urls.py",
+    "*/management/commands/*",
 ]
+
+[tool.coverage.report]
+fail_under = 80
+show_missing = true
 
 [tool.ruff]
 line-length = 88
