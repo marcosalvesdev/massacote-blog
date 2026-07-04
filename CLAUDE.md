@@ -17,7 +17,7 @@ This project uses `uv` for dependency management (see `uv.lock`) with a `.venv` 
 - Run dev server: `.venv/Scripts/python manage.py runserver` (or `uv run manage.py runserver`)
 - Make migrations after model changes: `.venv/Scripts/python manage.py makemigrations`
 - Apply migrations: `.venv/Scripts/python manage.py migrate`
-- Run tests: `.venv/Scripts/python manage.py test` (single app: `manage.py test post`)
+- Run tests: `docker compose exec web python manage.py test --noinput` (single app: `manage.py test post`) — runs against the real Postgres service, matching production. Running `.venv/Scripts/python manage.py test` directly on the host instead falls back to SQLite (no `DATABASE_URL` reachable outside the compose network); that's fine for a quick check, but you take on responsibility for confirming any Postgres-specific ORM behavior still holds.
 - Django shell: `.venv/Scripts/python manage.py shell`
 - Create superuser (for admin/login-gated views): `.venv/Scripts/python manage.py createsuperuser`
 
@@ -63,7 +63,7 @@ Cross-app integration tests (a flow that touches more than one app — signup cr
 
 **Fixtures.** No `factory_boy` or fixture files. Use plain helper methods on the `TestCase` (or a small `setUp`) to create a `User`/`Post`/`Profile` — keep them minimal (only the fields the test actually needs) rather than building a full "realistic" object every time.
 
-**Coverage.** `coverage run manage.py test && coverage report -m`. `[tool.coverage.run]` in `pyproject.toml` scopes this to `post`/`account` and omits migrations, `urls.py`, `admin.py`, `apps.py`, and the test packages themselves — those only ever get "covered" by Django's app loading at test-runner startup (or by being the tests), not by anything actually asserting on their behavior, so including them would inflate the number without meaning anything. If you add a new boilerplate-only file in that category, add it to `omit` rather than writing a test just to move a number.
+**Coverage.** `docker compose exec web coverage run manage.py test --noinput && docker compose exec web coverage report -m` (same container-vs-host tradeoff as the test command above). `[tool.coverage.run]` in `pyproject.toml` scopes this to `post`/`account` and omits migrations, `urls.py`, `admin.py`, `apps.py`, and the test packages themselves — those only ever get "covered" by Django's app loading at test-runner startup (or by being the tests), not by anything actually asserting on their behavior, so including them would inflate the number without meaning anything. If you add a new boilerplate-only file in that category, add it to `omit` rather than writing a test just to move a number.
 
 ## Future improvements
 
