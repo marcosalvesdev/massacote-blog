@@ -34,6 +34,17 @@ ALLOWED_HOSTS = config(
     "ALLOWED_HOSTS", default="*", cast=lambda v: [s.strip() for s in v.split(",")]
 )
 
+# Security settings
+CSRF_TRUSTED_ORIGINS = config(
+    "CSRF_TRUSTED_ORIGINS",
+    default="",
+    cast=lambda v: [s.strip() for s in v.split(",") if s.strip()],
+)
+SECURE_SSL_REDIRECT = config("SECURE_SSL_REDIRECT", default=False, cast=bool)
+SESSION_COOKIE_SECURE = config("SESSION_COOKIE_SECURE", default=False, cast=bool)
+CSRF_COOKIE_SECURE = config("CSRF_COOKIE_SECURE", default=False, cast=bool)
+SECURE_HSTS_SECONDS = config("SECURE_HSTS_SECONDS", default=0, cast=int)
+
 
 # Application definition
 
@@ -53,9 +64,7 @@ LOCAL_APPS = [
     "comment",
 ]
 
-DEVELOPMENT_APPS = []
-
-INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + DEVELOPMENT_APPS
+INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -203,7 +212,7 @@ if ENABLE_DEBUG_TOOLBAR:
     DEBUG_TOOLBAR_CONFIG = {"UPDATE_ON_FETCH": True}
 
 
-ENABLE_WHITENOISE = config("ENABLE_WHITENOISE", default=not DEBUG, cast=bool)
+ENABLE_WHITENOISE = config("ENABLE_WHITENOISE", default=False, cast=bool)
 if ENABLE_WHITENOISE:
     # Add WhiteNoise middleware for serving static files when DEBUG is off (production, or local Gunicorn testing)
     sec_midw_idx = MIDDLEWARE.index("django.middleware.security.SecurityMiddleware")

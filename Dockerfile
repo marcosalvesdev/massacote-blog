@@ -51,4 +51,6 @@ CMD ["gunicorn", "core.wsgi:application", \
     "--max-requests", "1000", \
     "--max-requests-jitter", "50", \
     "--timeout", "120", \
-    "--graceful-timeout", "30"]
+    "--graceful-timeout", "30", \
+    "--access-logfile", "-", \
+    "--error-logfile", "-"]
