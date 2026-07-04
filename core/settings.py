@@ -20,10 +20,6 @@ from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-TESTING = "test" in sys.argv or "PYTEST_VESION" in os.environ
-
-if TESTING:
-    PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
@@ -102,6 +98,26 @@ DATABASES = {
     )
 }
 
+USE_S3_STORAGE = config("USE_S3_STORAGE", default=False, cast=bool)
+if USE_S3_STORAGE:
+    STORAGES = {
+        "default": {
+            "BACKEND": "storages.backends.s3.S3Storage",
+            "OPTIONS": {
+                "bucket_name": config("AWS_STORAGE_BUCKET_NAME"),
+                "location": "media",
+            },
+        },
+        "staticfiles": {
+            "BACKEND": "storages.backends.s3.S3Storage",
+            "OPTIONS": {
+                "bucket_name": config("AWS_STORAGE_BUCKET_NAME"),
+                "location": "static",
+                "querystring_auth": False,
+            },
+        },
+    }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
@@ -165,13 +181,30 @@ EMAIL_HOST_USER = config("EMAIL_HOST_USER", default="")
 EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
 PASSWORD_RESET_TIMEOUT = config("PASSWORD_RESET_TIMEOUT", default=1800, cast=int)
 
-if DEBUG and not TESTING:
+
+# Development and testing settings
+
+AUTOMATED_TESTS_RUNNING = "test" in sys.argv or "PYTEST_VESION" in os.environ
+
+if AUTOMATED_TESTS_RUNNING:
+    PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]
+
+ENABLE_DEBUG_TOOLBAR = config(
+    "ENABLE_DEBUG_TOOLBAR", default=DEBUG and not AUTOMATED_TESTS_RUNNING, cast=bool
+)
+if ENABLE_DEBUG_TOOLBAR:
     import socket
 
     INSTALLED_APPS += ["debug_toolbar"]
-
     MIDDLEWARE = ["debug_toolbar.middleware.DebugToolbarMiddleware", *MIDDLEWARE]
     _, _, ips = socket.gethostbyname_ex(socket.gethostname())
     INTERNAL_IPS = [ip[: ip.rfind(".")] + ".1" for ip in ips] + ["127.0.0.1"]
     # https://django-debug-toolbar.readthedocs.io/en/latest/configuration.html#update-on-fetch
     DEBUG_TOOLBAR_CONFIG = {"UPDATE_ON_FETCH": True}
+
+
+ENABLE_WHITENOISE = config("ENABLE_WHITENOISE", default=not DEBUG, cast=bool)
+if ENABLE_WHITENOISE:
+    # Add WhiteNoise middleware for serving static files when DEBUG is off (production, or local Gunicorn testing)
+    sec_midw_idx = MIDDLEWARE.index("django.middleware.security.SecurityMiddleware")
+    MIDDLEWARE.insert(sec_midw_idx + 1, "whitenoise.middleware.WhiteNoiseMiddleware")

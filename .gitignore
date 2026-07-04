@@ -7,3 +7,4 @@ __vscode__/
 .env
 media/
 .coverage
+staticfiles/

@@ -27,7 +27,7 @@ COPY . .
 
 CMD ["uv", "run", "manage.py", "runserver", "0.0.0.0:8000"]
 
-FROM python:3.12-slim-trixie AS runtime
+FROM python:3.12-slim-trixie AS production
 
 WORKDIR /app
 
