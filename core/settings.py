@@ -14,6 +14,7 @@ import os
 import sys
 from pathlib import Path
 
+import dj_database_url
 from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -96,11 +97,12 @@ WSGI_APPLICATION = "core.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
+
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
+    "default": dj_database_url.config(
+        default=config("DATABASE_URL", default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}"),
+        conn_max_age=config("DATABASE_CONN_MAX_AGE", default=600, cast=int),
+    )
 }
 
 
@@ -167,8 +169,12 @@ EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
 PASSWORD_RESET_TIMEOUT = config("PASSWORD_RESET_TIMEOUT", default=1800, cast=int)
 
 if DEBUG and not TESTING:
+    import socket
+
     INSTALLED_APPS += ["debug_toolbar"]
+
     MIDDLEWARE = ["debug_toolbar.middleware.DebugToolbarMiddleware", *MIDDLEWARE]
-    INTERNAL_IPS = ["127.0.0.1"]
+    _, _, ips = socket.gethostbyname_ex(socket.gethostname())
+    INTERNAL_IPS = [ip[: ip.rfind(".")] + ".1" for ip in ips] + ["127.0.0.1"]
     # https://django-debug-toolbar.readthedocs.io/en/latest/configuration.html#update-on-fetch
     DEBUG_TOOLBAR_CONFIG = {"UPDATE_ON_FETCH": True}
