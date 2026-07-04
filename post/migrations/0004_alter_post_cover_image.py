@@ -6,15 +6,16 @@ import post.models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('post', '0003_post_cover_image'),
+        ("post", "0003_post_cover_image"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='post',
-            name='cover_image',
-            field=models.ImageField(blank=True, null=True, upload_to=post.models.post_cover_path),
+            model_name="post",
+            name="cover_image",
+            field=models.ImageField(
+                blank=True, null=True, upload_to=post.models.post_cover_path
+            ),
         ),
     ]

@@ -68,8 +68,12 @@ class PostCleanTests(TestCase):
 
     def _post(self, status, is_approved):
         return Post(
-            title="T", slug="t", author=self.author, content="x",
-            status=status, is_approved=is_approved,
+            title="T",
+            slug="t",
+            author=self.author,
+            content="x",
+            status=status,
+            is_approved=is_approved,
         )
 
     def test_published_without_approval_raises(self):
