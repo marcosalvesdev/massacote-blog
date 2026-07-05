@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+    - uses: astral-sh/setup-uv@v8.2.0
+    - run: uv sync --frozen
+    - run: uv run ruff check .
+    - run: uv run ruff format --check .
+
+  test:
+    runs-on: ubuntu-latest
+    env:
+      DEBUG: "True"
+      SECRET_KEY: "ci-test-secret-key"
+      DATABASE_URL: "postgres://massacote:massacote@localhost:5432/massacote_db"
+    services:
+      db:
+        image: postgres:17
+        env:
+          POSTGRES_USER: massacote
+          POSTGRES_PASSWORD: massacote
+          POSTGRES_DB: massacote_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U massacote -d massacote_db"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+    - uses: actions/checkout@v6
+    - uses: astral-sh/setup-uv@v8.2.0
+    - run: uv sync --frozen
+    - run: uv run coverage run manage.py test --noinput
+    - run: uv run coverage report -m
+

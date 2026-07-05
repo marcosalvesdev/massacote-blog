@@ -13,22 +13,22 @@ class CreateUserViewTests(TestCase):
         response = self.client.post(
             reverse("account:create"),
             {
-                "username": "marcos",
+                "username": "testuser",
                 "password1": "a-strong-pw-123",
                 "password2": "a-strong-pw-123",
             },
         )
 
         self.assertRedirects(response, reverse("login"))
-        self.assertTrue(User.objects.filter(username="marcos").exists())
+        self.assertTrue(User.objects.filter(username="testuser").exists())
 
 
 class DetailUserViewTests(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username="marcos", password="pw12345")
+        self.user = User.objects.create_user(username="testuser", password="pw12345")
 
     def test_anonymous_user_is_redirected_to_login(self):
-        url = reverse("account:detail", kwargs={"username": "marcos"})
+        url = reverse("account:detail", kwargs={"username": "testuser"})
 
         response = self.client.get(url)
 
@@ -38,7 +38,7 @@ class DetailUserViewTests(TestCase):
         self.client.force_login(self.user)
 
         response = self.client.get(
-            reverse("account:detail", kwargs={"username": "marcos"})
+            reverse("account:detail", kwargs={"username": "testuser"})
         )
 
         self.assertEqual(response.status_code, 200)
@@ -48,9 +48,9 @@ class DetailUserViewTests(TestCase):
 class UpdateUserViewTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
-            username="marcos",
+            username="testuser",
             password="pw12345",
-            first_name="Marcos",
+            first_name="Test",
             last_name="Alves",
             email="old@example.com",
         )
@@ -59,10 +59,10 @@ class UpdateUserViewTests(TestCase):
         self.client.force_login(self.user)
 
         response = self.client.post(
-            reverse("account:update", kwargs={"username": "marcos"}),
+            reverse("account:update", kwargs={"username": "testuser"}),
             {
-                "username": "marcos",
-                "first_name": "Marcos",
+                "username": "testuser",
+                "first_name": "Test",
                 "last_name": "Alves",
                 "email": "new@example.com",
                 "bio": "Hello, I write about tech.",
@@ -71,7 +71,7 @@ class UpdateUserViewTests(TestCase):
 
         self.user.refresh_from_db()
         self.assertRedirects(
-            response, reverse("account:detail", kwargs={"username": "marcos"})
+            response, reverse("account:detail", kwargs={"username": "testuser"})
         )
         self.assertEqual(self.user.email, "new@example.com")
         self.assertEqual(self.user.profile.bio, "Hello, I write about tech.")
@@ -80,10 +80,10 @@ class UpdateUserViewTests(TestCase):
         self.client.force_login(self.user)
 
         self.client.post(
-            reverse("account:update", kwargs={"username": "marcos"}),
+            reverse("account:update", kwargs={"username": "testuser"}),
             {
-                "username": "marcos",
-                "first_name": "Marcos",
+                "username": "testuser",
+                "first_name": "Test",
                 "last_name": "Alves",
                 "email": "old@example.com",
                 "bio": "Just updating my bio.",
@@ -91,17 +91,17 @@ class UpdateUserViewTests(TestCase):
         )
 
         self.user.refresh_from_db()
-        self.assertEqual(self.user.first_name, "Marcos")
+        self.assertEqual(self.user.first_name, "Test")
         self.assertEqual(self.user.last_name, "Alves")
 
     def test_invalid_submission_rerenders_both_forms_with_errors(self):
         self.client.force_login(self.user)
 
         response = self.client.post(
-            reverse("account:update", kwargs={"username": "marcos"}),
+            reverse("account:update", kwargs={"username": "testuser"}),
             {
                 "username": "",
-                "first_name": "Marcos",
+                "first_name": "Test",
                 "last_name": "Alves",
                 "email": "old@example.com",
                 "bio": "Hello",
@@ -114,14 +114,14 @@ class UpdateUserViewTests(TestCase):
 
 class DeleteUserViewTests(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username="marcos", password="pw12345")
+        self.user = User.objects.create_user(username="testuser", password="pw12345")
 
     def test_owner_can_delete_their_account(self):
         self.client.force_login(self.user)
 
         response = self.client.post(
-            reverse("account:delete", kwargs={"username": "marcos"})
+            reverse("account:delete", kwargs={"username": "testuser"})
         )
 
         self.assertRedirects(response, reverse("post:list"))
-        self.assertFalse(User.objects.filter(username="marcos").exists())
+        self.assertFalse(User.objects.filter(username="testuser").exists())

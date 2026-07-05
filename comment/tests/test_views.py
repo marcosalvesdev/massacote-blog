@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from django.test import TestCase, Client
+from django.test import Client, TestCase
 from django.urls import reverse
 
 from comment.models import Comment
@@ -30,7 +30,9 @@ class CommentCreateViewTest(TestCase):
 
         self.client.post(self.url, {"content": "Great post!"})
 
-        self.assertTrue(Comment.objects.filter(post=self.post, author=self.user).exists())
+        self.assertTrue(
+            Comment.objects.filter(post=self.post, author=self.user).exists()
+        )
 
     def test_comment_is_created_with_is_approved_false(self):
         self.client.force_login(self.user)

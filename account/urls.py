@@ -1,8 +1,9 @@
 from django.urls import path
+
 from account.views.user import (
-    DetailUserView,
     CreateUserView,
     DeleteUserView,
+    DetailUserView,
     UpdateUserView,
 )
 

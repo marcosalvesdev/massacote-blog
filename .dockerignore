@@ -1,0 +1,16 @@
+.venv/
+db.sqlite3
+.env
+media/
+staticfiles/
+__pycache__/
+.git/
+*.pyc
+.claude
+.coverage
+.env.example
+.gitignore
+.github/
+CLAUDE.md
+.ruff_cache
+.docker-compose

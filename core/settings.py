@@ -10,36 +10,40 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
-import sys
 import os
-
-from decouple import config
-
+import sys
 from pathlib import Path
+
+import dj_database_url
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-TESTING = "test" in sys.argv or "PYTEST_VESION" in os.environ
-
-if TESTING:
-    PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config(
-    "SECRET_KEY",
-    default="django-insecure-j8=!b-s3jv&!j$5l=8y80d%lw$tj)v4sc0!y74hl@*=(k9nc)k",
-)
+SECRET_KEY = config("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config("DEBUG", default=True, cast=bool)
+DEBUG = config("DEBUG", default=False, cast=bool)
 
 ALLOWED_HOSTS = config(
     "ALLOWED_HOSTS", default="*", cast=lambda v: [s.strip() for s in v.split(",")]
 )
+
+# Security settings
+CSRF_TRUSTED_ORIGINS = config(
+    "CSRF_TRUSTED_ORIGINS",
+    default="",
+    cast=lambda v: [s.strip() for s in v.split(",") if s.strip()],
+)
+SECURE_SSL_REDIRECT = config("SECURE_SSL_REDIRECT", default=False, cast=bool)
+SESSION_COOKIE_SECURE = config("SESSION_COOKIE_SECURE", default=False, cast=bool)
+CSRF_COOKIE_SECURE = config("CSRF_COOKIE_SECURE", default=False, cast=bool)
+SECURE_HSTS_SECONDS = config("SECURE_HSTS_SECONDS", default=0, cast=int)
 
 
 # Application definition
@@ -60,9 +64,7 @@ LOCAL_APPS = [
     "comment",
 ]
 
-DEVELOPMENT_APPS = []
-
-INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + DEVELOPMENT_APPS
+INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -97,12 +99,33 @@ WSGI_APPLICATION = "core.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
+
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
+    "default": dj_database_url.config(
+        default=config("DATABASE_URL", default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}"),
+        conn_max_age=config("DATABASE_CONN_MAX_AGE", default=600, cast=int),
+    )
 }
+
+USE_S3_STORAGE = config("USE_S3_STORAGE", default=False, cast=bool)
+if USE_S3_STORAGE:
+    STORAGES = {
+        "default": {
+            "BACKEND": "storages.backends.s3.S3Storage",
+            "OPTIONS": {
+                "bucket_name": config("AWS_STORAGE_BUCKET_NAME"),
+                "location": "media",
+            },
+        },
+        "staticfiles": {
+            "BACKEND": "storages.backends.s3.S3Storage",
+            "OPTIONS": {
+                "bucket_name": config("AWS_STORAGE_BUCKET_NAME"),
+                "location": "static",
+                "querystring_auth": False,
+            },
+        },
+    }
 
 
 # Password validation
@@ -167,9 +190,30 @@ EMAIL_HOST_USER = config("EMAIL_HOST_USER", default="")
 EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
 PASSWORD_RESET_TIMEOUT = config("PASSWORD_RESET_TIMEOUT", default=1800, cast=int)
 
-if DEBUG and not TESTING:
+
+# Development and testing settings
+
+AUTOMATED_TESTS_RUNNING = "test" in sys.argv or "PYTEST_VESION" in os.environ
+
+if AUTOMATED_TESTS_RUNNING:
+    PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]
+
+ENABLE_DEBUG_TOOLBAR = config(
+    "ENABLE_DEBUG_TOOLBAR", default=DEBUG and not AUTOMATED_TESTS_RUNNING, cast=bool
+)
+if ENABLE_DEBUG_TOOLBAR:
+    import socket
+
     INSTALLED_APPS += ["debug_toolbar"]
     MIDDLEWARE = ["debug_toolbar.middleware.DebugToolbarMiddleware", *MIDDLEWARE]
-    INTERNAL_IPS = ["127.0.0.1"]
+    _, _, ips = socket.gethostbyname_ex(socket.gethostname())
+    INTERNAL_IPS = [ip[: ip.rfind(".")] + ".1" for ip in ips] + ["127.0.0.1"]
     # https://django-debug-toolbar.readthedocs.io/en/latest/configuration.html#update-on-fetch
     DEBUG_TOOLBAR_CONFIG = {"UPDATE_ON_FETCH": True}
+
+
+ENABLE_WHITENOISE = config("ENABLE_WHITENOISE", default=False, cast=bool)
+if ENABLE_WHITENOISE:
+    # Add WhiteNoise middleware for serving static files when DEBUG is off (production, or local Gunicorn testing)
+    sec_midw_idx = MIDDLEWARE.index("django.middleware.security.SecurityMiddleware")
+    MIDDLEWARE.insert(sec_midw_idx + 1, "whitenoise.middleware.WhiteNoiseMiddleware")

@@ -17,17 +17,19 @@ class PasswordResetFlowTests(TestCase):
 
     def setUp(self):
         self.user = User.objects.create_user(
-            username="marcos", password="old-password-123", email="marcos@example.com"
+            username="testuser",
+            password="old-password-123",
+            email="testuser@example.com",
         )
 
     def test_requesting_a_reset_sends_one_email(self):
         response = self.client.post(
-            reverse("password_reset"), {"email": "marcos@example.com"}
+            reverse("password_reset"), {"email": "testuser@example.com"}
         )
 
         self.assertRedirects(response, reverse("password_reset_done"))
         self.assertEqual(len(mail.outbox), 1)
-        self.assertIn("marcos@example.com", mail.outbox[0].to)
+        self.assertIn("testuser@example.com", mail.outbox[0].to)
 
     def test_requesting_a_reset_for_unknown_email_sends_no_email(self):
         self.client.post(reverse("password_reset"), {"email": "nobody@example.com"})
@@ -35,7 +37,7 @@ class PasswordResetFlowTests(TestCase):
         self.assertEqual(len(mail.outbox), 0)
 
     def test_full_reset_flow_lets_user_log_in_with_new_password(self):
-        self.client.post(reverse("password_reset"), {"email": "marcos@example.com"})
+        self.client.post(reverse("password_reset"), {"email": "testuser@example.com"})
 
         uid = urlsafe_base64_encode(force_bytes(self.user.pk))
         token = default_token_generator.make_token(self.user)
@@ -48,13 +50,16 @@ class PasswordResetFlowTests(TestCase):
 
         confirm_post_response = self.client.post(
             set_password_url,
-            {"new_password1": "a-brand-new-pw-456", "new_password2": "a-brand-new-pw-456"},
+            {
+                "new_password1": "a-brand-new-pw-456",
+                "new_password2": "a-brand-new-pw-456",
+            },
         )
         self.assertRedirects(confirm_post_response, reverse("password_reset_complete"))
 
         self.assertFalse(
-            self.client.login(username="marcos", password="old-password-123")
+            self.client.login(username="testuser", password="old-password-123")
         )
         self.assertTrue(
-            self.client.login(username="marcos", password="a-brand-new-pw-456")
+            self.client.login(username="testuser", password="a-brand-new-pw-456")
         )

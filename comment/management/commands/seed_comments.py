@@ -2,7 +2,6 @@ import itertools
 
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
-
 from faker import Faker
 
 from comment.models import Comment
@@ -47,14 +46,20 @@ class Command(BaseCommand):
         users = list(User.objects.filter(is_superuser=False))
 
         if not posts:
-            self.stdout.write(self.style.WARNING("No posts found. Run seed_posts first."))
+            self.stdout.write(
+                self.style.WARNING("No posts found. Run seed_posts first.")
+            )
             return
         if not users:
-            self.stdout.write(self.style.WARNING("No users found. Run seed_posts first."))
+            self.stdout.write(
+                self.style.WARNING("No users found. Run seed_posts first.")
+            )
             return
 
         comments_per_post = options["comments"]
-        self.stdout.write(f"Seeding {comments_per_post} comments per post ({len(posts)} posts)...")
+        self.stdout.write(
+            f"Seeding {comments_per_post} comments per post ({len(posts)} posts)..."
+        )
 
         user_cycle = itertools.cycle(users)
         total = 0

@@ -1,7 +1,6 @@
-from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
+from django.core.management.base import BaseCommand
 from django.utils.text import slugify
-
 from faker import Faker
 
 from post.models import Post, Status
@@ -21,7 +20,7 @@ class Command(BaseCommand):
         parser.add_argument(
             "--clear-only",
             action="store_true",
-            help="Remove all existing posts and non-superuser users without seeding new data.",
+            help="Remove all existing posts and non-superuser users without seeding new data.",  # noqa: E501
         )
         parser.add_argument(
             "--clear",
@@ -95,15 +94,18 @@ class Command(BaseCommand):
                     excerpt=fake.sentence(nb_words=20),
                     slug=slug,
                     status=Status.PUBLISHED,
+                    is_approved=True,
                 )
 
     def _unique_slug(self, title: str) -> str:
-        slug = slugify(title)
+        max_length = Post._meta.get_field("slug").max_length
+        slug = slugify(title)[:max_length]
         if not Post.objects.filter(slug=slug).exists():
             return slug
 
         for i in range(1, 100):
-            candidate = f"{slug}-{i}"
+            suffix = f"-{i}"
+            candidate = f"{slug[: max_length - len(suffix)]}{suffix}"
             if not Post.objects.filter(slug=candidate).exists():
                 return candidate
 
