@@ -13,17 +13,17 @@ class SignupLoginAndPostFlowTests(TestCase):
         signup_response = self.client.post(
             reverse("account:create"),
             {
-                "username": "marcos",
+                "username": "testuser",
                 "password1": "a-strong-pw-123",
                 "password2": "a-strong-pw-123",
             },
         )
         self.assertRedirects(signup_response, reverse("login"))
 
-        user = User.objects.get(username="marcos")
+        user = User.objects.get(username="testuser")
         self.assertTrue(Profile.objects.filter(user=user).exists())
 
-        login_ok = self.client.login(username="marcos", password="a-strong-pw-123")
+        login_ok = self.client.login(username="testuser", password="a-strong-pw-123")
         self.assertTrue(login_ok)
 
         create_response = self.client.post(

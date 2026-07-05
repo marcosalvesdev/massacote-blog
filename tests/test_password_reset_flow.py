@@ -18,7 +18,7 @@ class PasswordResetFlowTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
             username="testuser",
-            password="old-password-123",  # ggignore
+            password="old-password-123",
             email="testuser@example.com",
         )
 
@@ -51,19 +51,15 @@ class PasswordResetFlowTests(TestCase):
         confirm_post_response = self.client.post(
             set_password_url,
             {
-                "new_password1": "a-brand-new-pw-456",  # ggignore
-                "new_password2": "a-brand-new-pw-456",  # ggignore
+                "new_password1": "a-brand-new-pw-456",
+                "new_password2": "a-brand-new-pw-456",
             },
         )
         self.assertRedirects(confirm_post_response, reverse("password_reset_complete"))
 
         self.assertFalse(
-            self.client.login(
-                username="testuser", password="old-password-123"
-            )  # ggignore
+            self.client.login(username="testuser", password="old-password-123")
         )
         self.assertTrue(
-            self.client.login(
-                username="testuser", password="a-brand-new-pw-456"
-            )  # ggignore
+            self.client.login(username="testuser", password="a-brand-new-pw-456")
         )

@@ -9,9 +9,9 @@ class UserFormTests(TestCase):
     def test_valid_data_is_accepted(self):
         form = UserForm(
             data={
-                "username": "marcos",
-                "email": "marcos@example.com",
-                "first_name": "Marcos",
+                "username": "testuser",
+                "email": "testuser@example.com",
+                "first_name": "Test",
                 "last_name": "Alves",
             }
         )
@@ -19,7 +19,7 @@ class UserFormTests(TestCase):
         self.assertTrue(form.is_valid())
 
     def test_username_is_required(self):
-        form = UserForm(data={"username": "", "email": "marcos@example.com"})
+        form = UserForm(data={"username": "", "email": "testuser@example.com"})
 
         self.assertFalse(form.is_valid())
         self.assertIn("username", form.errors)
@@ -37,7 +37,7 @@ class ProfileFormTests(TestCase):
         self.assertTrue(form.is_valid())
 
     def test_bio_is_saved(self):
-        user = User.objects.create_user(username="marcos", password="pw12345")
+        user = User.objects.create_user(username="testuser", password="pw12345")
         form = ProfileForm(
             data={"bio": "Hello, I write about tech."}, instance=user.profile
         )
