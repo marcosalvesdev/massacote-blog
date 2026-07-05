@@ -94,15 +94,18 @@ class Command(BaseCommand):
                     excerpt=fake.sentence(nb_words=20),
                     slug=slug,
                     status=Status.PUBLISHED,
+                    is_approved=True,
                 )
 
     def _unique_slug(self, title: str) -> str:
-        slug = slugify(title)
+        max_length = Post._meta.get_field("slug").max_length
+        slug = slugify(title)[:max_length]
         if not Post.objects.filter(slug=slug).exists():
             return slug
 
         for i in range(1, 100):
-            candidate = f"{slug}-{i}"
+            suffix = f"-{i}"
+            candidate = f"{slug[: max_length - len(suffix)]}{suffix}"
             if not Post.objects.filter(slug=candidate).exists():
                 return candidate
 
