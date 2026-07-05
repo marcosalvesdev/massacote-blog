@@ -62,8 +62,11 @@ logs: ## Tail web service logs
 
 provision: ## Build, start, and seed the whole application from scratch (migrations run automatically via entrypoint.sh)
 	docker compose up --build -d
-	@echo "Waiting for the web service to finish migrating/collecting static..."
 	@sleep 5
+	@echo "Waiting for the web service to finish migrations..."
+	$(MAKE) dmigrate
+	@sleep 5
+	@echo "Seeding the database..."
 	$(MAKE) dseed
 	@echo ""
 	@echo "Done. App running at http://localhost:8000"
