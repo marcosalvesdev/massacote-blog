@@ -1,7 +1,7 @@
 .PHONY: help \
-	run migrate makemigrations shell createsuperuser test coverage lint format format-check \
-	up down build logs \
-	drun dmigrate dmakemigrations dshell dtest dcoverage \
+	run migrate makemigrations shell createsuperuser test coverage lint format format-check seed \
+	up down build logs provision \
+	drun dmigrate dmakemigrations dshell dtest dcoverage dcreatesuperuser dseed \
 	ci ci-lint ci-test
 
 help: ## Show this help
@@ -33,6 +33,10 @@ coverage: ## Run tests locally with coverage report
 	uv run coverage run manage.py test
 	uv run coverage report -m
 
+seed: ## Seed the local database with fake users, posts, and comments
+	uv run manage.py seed_posts --clear
+	uv run manage.py seed_comments --clear
+
 lint: ## Run ruff lint checks
 	uv run ruff check .
 
@@ -56,6 +60,15 @@ down: ## Stop and remove containers
 logs: ## Tail web service logs
 	docker compose logs -f web
 
+provision: ## Build, start, and seed the whole application from scratch (migrations run automatically via entrypoint.sh)
+	docker compose up --build -d
+	@echo "Waiting for the web service to finish migrating/collecting static..."
+	@sleep 5
+	$(MAKE) dseed
+	@echo ""
+	@echo "Done. App running at http://localhost:8000"
+	@echo "Run 'make dcreatesuperuser' to create an admin account."
+
 drun: ## Ensure containers are up (detached)
 	docker compose up -d db web
 
@@ -68,12 +81,19 @@ dmakemigrations: drun ## Create migrations inside the web container
 dshell: drun ## Open the Django shell inside the web container
 	docker compose exec web python manage.py shell
 
+dcreatesuperuser: drun ## Create a superuser inside the web container
+	docker compose exec web python manage.py createsuperuser
+
 dtest: drun ## Run tests inside the web container against real Postgres
 	docker compose exec web python manage.py test --noinput
 
 dcoverage: drun ## Run tests with coverage inside the web container
 	docker compose exec web coverage run manage.py test --noinput
 	docker compose exec web coverage report -m
+
+dseed: drun ## Seed the containerized database with fake users, posts, and comments
+	docker compose exec web python manage.py seed_posts --clear
+	docker compose exec web python manage.py seed_comments --clear
 
 ## --- CI (GitHub Actions, run locally via act) ---
 
